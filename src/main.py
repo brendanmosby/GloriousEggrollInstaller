@@ -20,6 +20,10 @@ for asset in assets:
     elif (file_ext == ".gz"):
         file = file_name
 
+if (os.path.exists(f"{DownloadAssets.USER_STEAM_DIR}/{file_name}")):
+    print("You already have the latest version!")
+    quit()
+
 DownloadAssets.compare_hash(file, hash)
 
 print("Done!")
