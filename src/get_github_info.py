@@ -1,23 +1,25 @@
-import json
+'''Get Github information'''
 import requests
 
-class GetGithubInfo(): 
+class GetGithubInfo():
+    '''Class used for retrieving and parsing the information received from Github'''
 
     def get_info(self):
-        GH_URL = "https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
-        
-        response = self.request(GH_URL)
+        '''Get release information from Github'''
+        gh_url = "https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
 
-        try: 
+        response = self.request(gh_url)
+
+        try:
             asset_urls = self.parse(response)
-        except error:
-            print(error)
+        except ValueError as v_error:
+            print(v_error)
 
         return asset_urls
 
     def parse(self, json):
+        '''Parse the JSON received from the URL'''
         asset_urls = []
-        tag_name = json["tag_name"]
         assets = json["assets"]
 
         if len(assets) > 0:
@@ -33,5 +35,6 @@ class GetGithubInfo():
         return asset_urls
 
     def request(self, url):
-        response = requests.get(url)
+        '''Retrieve the JSON from the URL'''
+        response = requests.get(url, timeout=10)
         return response.json()
