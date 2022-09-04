@@ -60,7 +60,6 @@ class DownloadAssets():
     def extract_tar(self, tar_name):
         print("Extracting...")
         file = tarfile.open(f"{DownloadAssets.USER_STEAM_DIR}/{tar_name}")
-        #file.extractall(f"{DownloadAssets.USER_STEAM_DIR}/{tar_name.split('.')[0]}")
         file.extractall(f"{DownloadAssets.USER_STEAM_DIR}")
         file.close()
         os.remove(f"{DownloadAssets.USER_STEAM_DIR}/{tar_name}")
