@@ -1,9 +1,6 @@
-'''Get Github information'''
 import requests
 
 class GetGithubInfo():
-    '''Class used for retrieving and parsing the information received from Github'''
-
     def get_info(self):
         '''Get release information from Github'''
         gh_url = "https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"

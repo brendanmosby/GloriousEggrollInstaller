@@ -1,4 +1,3 @@
-'''Download Github assets'''
 import os
 import sys
 import hashlib
@@ -6,8 +5,6 @@ import tarfile
 import requests
 
 class DownloadAssets():
-    '''Class used to download the assets specified from Github'''
-
     USER_STEAM_DIR = os.path.expanduser("~/.steam/root/compatibilitytools.d/")
 
     def download_assets(self, url, name):
