@@ -29,7 +29,9 @@ class main():
 
     def display_releases(self):
         releases = self._githubService.get_releases()
-        print(releases)
+        for release in releases:
+            for _, name in release.items():
+                print(name)
 
     def get_latest(self):
         print("TODO")
@@ -44,6 +46,7 @@ class main():
         parser.add_argument('--list', dest='list', default=False, action='store_true', help=' display all available versions')
         parser.add_argument('--latest', dest='latest', default=False,
                             action='store_true', help='get the latest version and extract')
+        # TODO: Have this store string and use that to select desired version
         parser.add_argument('--specific', dest='specific')
         parser.add_argument('-v', help='display application version',
                             action='version', version='%(prog)s 1.0')
