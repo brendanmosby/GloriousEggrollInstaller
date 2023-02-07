@@ -1,30 +1,55 @@
 #!/usr/bin/env python
+import argparse
+from enum import Enum
+import logging
 import os
 import sys
-import get_github_info
-import download_assets
+from controllers import github_controller
+from services import github_service
+from services import download_service
+from config import config_service
 
-GetGithubInfo = get_github_info.GetGithubInfo()
-DownloadAssets = download_assets.DownloadAssets()
+class main():
+    _githubController = github_controller.GithubController() 
+    _githubService = github_service.GithubService()
+    _downloadService = download_service.DownloadService()
+    
+    def main(self):
 
-assets = GetGithubInfo.get_info()
+        _args = self.get_args()
+        
+        if (_args.list):
+            self.display_releases()
+        elif (_args.latest):
+            self.get_latest()
+        elif (_args.specific):
+            self.get_specific()
+        else:
+            logging.error("Unexpected argument")
 
-for asset in assets:
-    file_name = list(asset.keys())[0]
-    file_ext = os.path.splitext(file_name)[1]
-    url = asset[file_name]
+    def display_releases(self):
+        releases = self._githubService.get_releases()
+        print(releases)
 
-    if os.path.exists(f"{DownloadAssets.USER_STEAM_DIR}/{file_name}"):
-        print("You already have the latest version!")
-        sys.exit()
+    def get_latest(self):
+        print("TODO")
 
-    DownloadAssets.download_assets(url, file_name)
+    def get_specific(version):
+        print(f"TODO: {version}")
 
-    if file_ext == ".sha512sum":
-        hash_file = file_name
-    elif file_ext == ".gz":
-        file = file_name
+    def get_args(self):
+        _configService = config_service.ConfigService()
+        _configService.read_config()
+        parser = argparse.ArgumentParser(('GetGE'))
+        parser.add_argument('--list', dest='list', default=False, action='store_true', help=' display all available versions')
+        parser.add_argument('--latest', dest='latest', default=False,
+                            action='store_true', help='get the latest version and extract')
+        parser.add_argument('--specific', dest='specific')
+        parser.add_argument('-v', help='display application version',
+                            action='version', version='%(prog)s 1.0')
 
-DownloadAssets.compare_hash(file, hash_file)
+        return parser.parse_args()
 
-print("Done! Restart Steam to access the newest version.")
+
+if __name__ == '__main__':
+    main().main()
