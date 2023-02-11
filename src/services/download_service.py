@@ -1,16 +1,18 @@
+import logging
 import os
 import sys
-import hashlib
 import tarfile
 import requests
 
+from services import file_service
+
 
 class DownloadService():
-    USER_STEAM_DIR = os.path.expanduser("~/.steam/root/compatibilitytools.d/")
-
+    _fileService = file_service.FileService()
+    
     def download_assets(self, url, name):
         '''Check if the files have already been downloaded, if not then download them.'''
-        dl_path = f"{DownloadService.USER_STEAM_DIR}/{name}"
+        dl_path = f"{self._fileService.USER_STEAM_DIR}/{name}"
 
         if os.path.exists(dl_path):
             print(f"Using existing directory: {dl_path}")
@@ -20,7 +22,7 @@ class DownloadService():
             print(f"Downloading {name}")
             response = requests.get(url, stream=True, timeout=30)
             if response.status_code != 200:
-                print("Server Error")
+                logging.error("Server Error")
                 sys.exit()
             total_length = response.headers.get('content-length')
 
@@ -42,10 +44,10 @@ class DownloadService():
         '''Attempt to extract tarfile, if it fails then remove the downloaded assets'''
         print("Extracting...")
         try:
-            with tarfile.open(f"{DownloadService.USER_STEAM_DIR}/{tar_name}") as file:
-                file.extractall(f"{DownloadService.USER_STEAM_DIR}")
+            with tarfile.open(f"{self._fileService.USER_STEAM_DIR}/{tar_name}") as file:
+                file.extractall(f"{self._fileService.USER_STEAM_DIR}")
         except PermissionError:
             print("Error extracting tarfile, removing downloaded assets...")
-            os.remove(f"{DownloadService().USER_STEAM_DIR}/{tar_name}")
+            self._fileService.remove_file(tar_name)
             sys.exit()
-        os.remove(f"{DownloadService.USER_STEAM_DIR}/{tar_name}")
+        self._fileService.remove_file(tar_name)

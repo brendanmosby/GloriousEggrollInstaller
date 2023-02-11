@@ -1,25 +1,13 @@
 import logging
 import requests
-
+import sys
 
 class GithubService():
-    gh_base_url = 'https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases'
+    GH_BASE_URL = 'https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases'
 
-    def get_releases(self):
-        '''Get all releases from Github'''
-        release_url = self.gh_base_url
-        response = self.request(release_url)
-
-        try:
-            releases = self.parse_releases(response)
-        except ValueError as v_error:
-            logging.error(v_error)
-
-        return releases
-
-    def get_info_for_release(self, release_id):
+    def get_assets_for_release(self, release_id):
         '''Get release information from Github'''
-        release_info_url = self.gh_base_url + '/' + release_id
+        release_info_url = self.GH_BASE_URL + '/' + str(release_id)
 
         response = self.request(release_info_url)
 
@@ -52,7 +40,11 @@ class GithubService():
     def parse_releases(self, json):
         releases = []
         if len(json) > 0:
-            for release in json:
+            for release in json:                
+                if (release == 'message'):
+                    logging.error(json['message'])
+                    sys.exit()
+
                 id = release['id']
                 name = release['tag_name']
 

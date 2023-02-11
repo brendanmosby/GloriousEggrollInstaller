@@ -14,6 +14,9 @@ class ConfigService():
         config_file.add_section("Application")
         config_file.set("Application", "version", "1.0.0")
 
+        config_file.add_section("SteamPath")
+        config_file.set("SteamPath", "path", os.path.expanduser("~/.steam/root/compatibilitytools.d/"))
+
         self.write_config(config_file)
 
     def write_config(self, config_file):
@@ -22,10 +25,11 @@ class ConfigService():
             file_obj.flush()
             file_obj.close()
 
-        print(f"Config file '{self.FILE_NAME}' created")
-
     def read_config(self):
         config_path = os.path.join(self.CWD, self.FILE_PATH, self.FILE_NAME)
+        if not (os.path.exists(config_path)):
+            self.create_config()
+        
         config = configparser.ConfigParser()
         config.read(config_path)
 
