@@ -14,10 +14,9 @@ class GithubController():
         asset_urls = self._githubService.get_assets_for_release(latest_release_id)
         self._downloadController.download_release_files(asset_urls)
 
-    def get_release_info(self, release_id):
+    def download_release(self, release_id):
         release_info = self._githubService.get_assets_for_release(release_id)
         self._downloadController.download_release_files(release_info)
-
 
     def get_releases(self):
         '''Get all releases from Github'''

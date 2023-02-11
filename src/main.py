@@ -20,8 +20,8 @@ class main():
             self.display_releases()
         elif (_args.latest or len(sys.argv) == 1):
             self.get_latest()
-        elif (_args.specific):
-            self.get_specific()
+        elif (_args.requested_version):
+            self.get_specific(_args.requested_version)
         else:
             logging.error("Unexpected argument")
 
@@ -46,8 +46,21 @@ class main():
         else:
             print("You already have the latest version!")
 
-    def get_specific(version):
-        print(f"TODO: {version}")
+    def get_specific(self, version):
+        release_name = 'GE-Proton' + version
+        releases = self._githubController.get_releases()
+        try:
+            matching_release = next(release for release in releases if list(release.values())[0] == release_name)
+            release_id = list(matching_release.keys())[0]
+            release_name = matching_release[release_id]
+        except:
+            logging.error("Version not found")
+            sys.exit()
+        
+        if not self._fileService.is_version_installed(release_name):
+            self._githubController.download_release(release_id)
+        else:
+            print("Version already installed!")
 
     def get_args(self):
         config = self.get_config()
@@ -57,8 +70,7 @@ class main():
         parser.add_argument('--list', dest='list', default=False, action='store_true', help=' display all available versions')
         parser.add_argument('--latest', dest='latest', default=False,
                             action='store_true', help='get the latest version and extract')
-        # TODO: Have this store string and use that to select desired version
-        parser.add_argument('--specific', dest='specific')
+        parser.add_argument('requested_version', metavar='V', type=str, help='a specific version to install')
         parser.add_argument('-v', help='display application version',
                             action='version', version='%(prog)s ' + f'{version}')
 

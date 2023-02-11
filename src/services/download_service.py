@@ -39,15 +39,3 @@ class DownloadService():
                                      ('=' * done, ' ' * (50-done)))
                     sys.stdout.flush()
                 print()
-
-    def extract_tar(self, tar_name):
-        '''Attempt to extract tarfile, if it fails then remove the downloaded assets'''
-        print("Extracting...")
-        try:
-            with tarfile.open(f"{self._fileService.USER_STEAM_DIR}/{tar_name}") as file:
-                file.extractall(f"{self._fileService.USER_STEAM_DIR}")
-        except PermissionError:
-            print("Error extracting tarfile, removing downloaded assets...")
-            self._fileService.remove_file(tar_name)
-            sys.exit()
-        self._fileService.remove_file(tar_name)

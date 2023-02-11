@@ -50,7 +50,7 @@ class DownloadController():
         if sha_hash.hexdigest() == checksum.split()[0]:
             print("Checksum validated")
             os.remove(f"{self._fileService.USER_STEAM_DIR}/{checksum_name}")
-            self._downloadService.extract_tar(file_name)
+            self._fileService.extract_tar(file_name)
         else:
             logging.error("Checksum validation failed. Try installing again.")
             self._fileService.remove_file(file_name)
