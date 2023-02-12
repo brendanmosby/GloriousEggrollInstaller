@@ -40,11 +40,12 @@ class main():
     def get_latest(self):
         releases = self._githubController.get_releases()
         latest = releases[0]
+        release_name = list(latest.values())[0]
 
-        if not self._fileService.is_version_installed(latest):
+        if not self._fileService.is_version_installed(release_name):
             self._githubController.install_latest()
         else:
-            print("You already have the latest version!")
+            self.release_error_message(release_name)
 
     def get_specific(self, version):
         release_name = 'GE-Proton' + version
@@ -58,9 +59,12 @@ class main():
             sys.exit()
         
         if not self._fileService.is_version_installed(release_name):
-            self._githubController.download_release(release_id)
+            self._githubController.install_release_for_id(release_id)
         else:
-            print("Version already installed!")
+            self.release_error_message(release_name)
+
+    def release_error_message(self, release_name):
+        print(f"{release_name} is already installed!")
 
     def get_args(self):
         config = self.get_config()
@@ -70,7 +74,7 @@ class main():
         parser.add_argument('--list', dest='list', default=False, action='store_true', help=' display all available versions')
         parser.add_argument('--latest', dest='latest', default=False,
                             action='store_true', help='get the latest version and extract')
-        parser.add_argument('requested_version', metavar='V', type=str, help='a specific version to install')
+        parser.add_argument('requested_version', metavar='R', type=str, nargs='?', help='a specific version to install')
         parser.add_argument('-v', help='display application version',
                             action='version', version='%(prog)s ' + f'{version}')
 

@@ -7,14 +7,14 @@ class GithubController():
     _downloadController = download_controller.DownloadController()
 
     def install_latest(self):
-        releases = self._githubService.get_releases()
+        releases = self.get_releases()
         latest_release = releases[0]
         latest_release_id = list(latest_release.keys())[0]
         
-        asset_urls = self._githubService.get_assets_for_release(latest_release_id)
-        self._downloadController.download_release_files(asset_urls)
+        self.install_release_for_id(latest_release_id)
 
-    def download_release(self, release_id):
+    def install_release_for_id(self, release_id):
+        '''Install release for given ID'''
         release_info = self._githubService.get_assets_for_release(release_id)
         self._downloadController.download_release_files(release_info)
 
